@@ -1,0 +1,28 @@
+{
+  "name": "apple-reminders",
+  "version": "0.1.0",
+  "description": "Read and manage Apple Reminders locally from Codex on macOS.",
+  "author": {
+    "name": "Jiawei Meng",
+    "url": "https://github.com/missionary0326"
+  },
+  "homepage": "https://github.com/missionary0326/codex-apple-reminders",
+  "repository": "https://github.com/missionary0326/codex-apple-reminders",
+  "license": "MIT",
+  "keywords": ["apple-reminders", "macos", "eventkit", "mcp", "productivity"],
+  "interface": {
+    "displayName": "Apple Reminders",
+    "shortDescription": "Manage Apple Reminders locally on your Mac.",
+    "longDescription": "Lists, searches, creates, edits, completes, and—with explicit confirmation—deletes Apple Reminders through a local EventKit helper.",
+    "developerName": "Jiawei Meng",
+    "category": "Productivity",
+    "capabilities": ["Read", "Write"],
+    "defaultPrompt": [
+      "Show my unfinished reminders.",
+      "Add a reminder to my Work list.",
+      "Mark a reminder as completed."
+    ],
+    "brandColor": "#FF9F0A"
+  },
+  "mcpServers": "./.mcp.json"
+}

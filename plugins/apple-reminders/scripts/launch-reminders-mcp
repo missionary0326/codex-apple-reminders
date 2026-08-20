@@ -1,0 +1,11 @@
+#!/bin/sh
+set -eu
+
+PLUGIN_ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+HELPER="$PLUGIN_ROOT/native/build/reminders-helper"
+
+if [ ! -x "$HELPER" ]; then
+  "$PLUGIN_ROOT/scripts/build-native.sh" >&2
+fi
+
+exec node "$PLUGIN_ROOT/server/index.mjs"

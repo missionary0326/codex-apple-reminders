@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "apple-reminders": {
+      "command": "./scripts/launch-reminders-mcp",
+      "args": [],
+      "cwd": ".",
+      "env_vars": ["HOME", "PATH"],
+      "startup_timeout_sec": 30,
+      "tool_timeout_sec": 180
+    }
+  }
+}

@@ -1,18 +1,22 @@
 # Codex Apple Reminders
 
-A local-first Codex plugin for reading and managing Apple Reminders on macOS through Apple's EventKit framework.
+A local-first Codex plugin for managing Apple Reminders on macOS 14+ through Apple's public EventKit framework.
 
-## What it can do
+## Features
 
-- List reminder lists
-- List and search reminders
-- Create and update reminders
-- Mark reminders complete or incomplete
-- Delete reminders only after explicit confirmation
+- Read reminder accounts, lists, and full reminder details
+- Search, filter, sort, and page reminders
+- Create and update dates, notes, locations, URLs, priorities, alarms, and advanced recurrence rules
+- Create, rename, and recolor lists
+- Move and complete reminders individually or in atomic batches
+- Preview destructive bulk/list operations and confirm with a one-time, five-minute token
+- Recover reminders through EventKit external identifiers when ordinary identifiers change
+
+No third-party API key or hosted service is required.
 
 ## Install
 
-Requirements: macOS, Node.js 18+, and Apple Command Line Tools.
+Requirements: macOS 14+, Node.js 18+, and Apple Command Line Tools.
 
 ```sh
 git clone https://github.com/missionary0326/codex-apple-reminders.git
@@ -27,11 +31,12 @@ Start a new Codex task after installation. The first real operation prompts for 
 
 Example prompts:
 
-- `Show my unfinished reminders.`
-- `Add "Read for 30 minutes" to my default list for today.`
-- `Mark the reminder "Read for 30 minutes" as completed.`
+- `Show unfinished reminders due this week.`
+- `Add a reminder every second Tuesday with a notification one hour before.`
+- `Create a list named Reading and color it blue.`
+- `Preview deleting these completed reminders.`
 
-## Architecture
+## Architecture and privacy
 
 ```text
 Codex
@@ -41,11 +46,20 @@ Codex
   -> Reminders / iCloud
 ```
 
-No third-party API key or hosted service is required. Reminder data returned by a tool becomes part of the active Codex task context.
+Reminder data returned by a tool becomes part of the active Codex task context. The plugin never reads the private Reminders database and does not use AppleScript or UI automation.
 
 ## Limitations
 
-Apple's public EventKit API does not expose the native Reminders subtask hierarchy, so this plugin does not claim subtask support.
+Apple's public EventKit API does not expose complete native subtask, tag, section, attachment, smart-list, or sharing-management functionality. Those features are intentionally not claimed.
+
+## Development
+
+```sh
+cd plugins/apple-reminders
+node --test server/*.test.mjs
+./scripts/build-native.sh
+printf '%s' '{"action":"self_test"}' | ./native/build/reminders-helper
+```
 
 ## License
 

@@ -1,38 +1,59 @@
 # Apple Reminders for Codex
 
-A local Codex plugin that uses a Node.js MCP server and a signed Objective-C/EventKit helper to work with Apple Reminders on macOS.
+A local Codex plugin that manages Apple Reminders through Apple's public EventKit framework. It runs entirely on the Mac and requires no API key or hosted service.
 
-The connector runs locally and does not require a third-party API key. Reminder data returned by a tool becomes part of the active Codex task context.
+## Requirements
 
-## Supported operations
-
-- List reminder lists
-- List and search reminders
-- Create and update reminders
-- Mark reminders complete or incomplete
-- Delete reminders only with explicit confirmation
-
-Apple's public EventKit API does not expose Reminders subtask hierarchy. This plugin therefore does not claim native subtask support.
-
-## Local build
-
-Requirements:
-
-- macOS
+- macOS 14 or newer
 - Node.js 18 or newer
 - Apple Command Line Tools (`xcode-select --install`)
+- Full Reminders permission for the signed native helper
 
-```sh
-./scripts/build-native.sh
-```
+## Capabilities
 
-The first real Reminders operation prompts for macOS permission. If access was denied previously, enable it under **System Settings > Privacy & Security > Reminders**.
+- List reminder accounts/sources and lists, including stable identifiers, colors, and write capabilities
+- List, search, filter, sort, and page reminders
+- Read full reminder details and recover items by external identifier after an EventKit identifier change
+- Create and edit title, notes, location text, URL, start date, due date, timezone, priority, alarms, and recurrence
+- Create, rename, and recolor reminder lists
+- Move and complete reminders individually or atomically in batches
+- Delete one reminder with `confirm=true`
+- Preview and token-confirm bulk or list deletion, with stale-snapshot protection
 
-Relative date language is resolved by Codex. The MCP tools receive `YYYY-MM-DD` or RFC 3339 timestamps so date handling remains explicit and testable.
+Dates use `YYYY-MM-DD` for all-day values and RFC 3339 for specific times. Codex resolves relative language such as “tomorrow” before calling the tools.
+
+Alarms may be absolute, relative, or location-based. Recurrence rules support daily, weekly, monthly, and yearly frequency plus interval, weekday positions, month/year constraints, and count/date endings.
+
+Completing a repeating reminder advances its series to the next occurrence, matching Apple Reminders. The response reports `completionOutcome: "advanced_to_next_occurrence"` instead of pretending the newly generated occurrence is completed.
 
 ## Safety
 
-- macOS permission is required before any reminder data can be accessed.
-- Write tools are described for explicit user requests only.
-- Deletion additionally requires `confirm=true`.
-- The plugin never reads the Reminders database directly; it uses Apple's EventKit framework.
+- Full macOS Reminders permission is required before data can be accessed.
+- Write tools are intended only for explicit user requests.
+- Bulk deletion and list deletion require a preview token valid for five minutes.
+- A token is one-time and bound to reminder identifiers and modification timestamps.
+- Batch writes are validated before an EventKit transaction is committed.
+- Mixed event/reminder calendars are not deleted.
+- The plugin never reads the private Reminders database and does not use AppleScript or UI automation.
+
+## Public EventKit limitations
+
+Apple does not expose complete public read/write APIs for native Reminders subtasks, tags, sections, attachments, smart lists, or sharing administration. This plugin reports those boundaries instead of simulating support through fragile private mechanisms.
+
+## Build and test
+
+```sh
+./scripts/build-native.sh
+node --test server/*.test.mjs
+printf '%s' '{"action":"self_test"}' | ./native/build/reminders-helper
+```
+
+The first real Reminders operation may show a permission prompt. If permission was denied, enable it under **System Settings > Privacy & Security > Reminders**.
+
+Integration tests must use a disposable list created specifically for testing; never point destructive tests at an existing user list.
+
+Run the opt-in real EventKit lifecycle test with:
+
+```sh
+APPLE_REMINDERS_INTEGRATION_TESTS=1 node --test server/integration.test.mjs
+```

@@ -11,8 +11,13 @@ mkdir -p "$BUILD_DIR" "$CACHE_DIR"
 CLANG_MODULE_CACHE_PATH="$CACHE_DIR" xcrun clang \
   -fobjc-arc \
   -fblocks \
+  -Wall \
+  -Wextra \
+  -mmacosx-version-min=14.0 \
   -O \
   "$PLUGIN_ROOT/native/RemindersHelper.m" \
+  -framework AppKit \
+  -framework CoreLocation \
   -framework Foundation \
   -framework EventKit \
   -Xlinker -sectcreate \

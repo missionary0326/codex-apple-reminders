@@ -1,7 +1,7 @@
 {
   "name": "apple-reminders",
-  "version": "0.1.0",
-  "description": "Read and manage Apple Reminders locally from Codex on macOS.",
+  "version": "0.2.0",
+  "description": "Manage Apple Reminders locally through the full public EventKit surface on macOS 14+.",
   "author": {
     "name": "Jiawei Meng",
     "url": "https://github.com/missionary0326"
@@ -13,14 +13,15 @@
   "interface": {
     "displayName": "Apple Reminders",
     "shortDescription": "Manage Apple Reminders locally on your Mac.",
-    "longDescription": "Lists, searches, creates, edits, completes, and—with explicit confirmation—deletes Apple Reminders through a local EventKit helper.",
+    "longDescription": "Lists, filters, creates, edits, repeats, moves, completes, and safely deletes Apple Reminders and lists through a local macOS 14+ EventKit helper.",
     "developerName": "Jiawei Meng",
     "category": "Productivity",
     "capabilities": ["Read", "Write"],
     "defaultPrompt": [
       "Show my unfinished reminders.",
-      "Add a reminder to my Work list.",
-      "Mark a reminder as completed."
+      "Add a weekly reminder to my Work list.",
+      "Show reminders due this week.",
+      "Preview deletion of my completed reminders."
     ],
     "brandColor": "#FF9F0A"
   },
